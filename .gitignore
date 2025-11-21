@@ -1,5 +1,6 @@
 # Data / outputs
 data/
+!shadecraft/data/
 checkpoints/
 *.pt
 *.pth
