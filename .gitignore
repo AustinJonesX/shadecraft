@@ -1,0 +1,18 @@
+# Data / outputs
+data/
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.tif
+*.tiff
+*.png
+*.jpg
+*.jpeg
+*.npy
+*.npz
+
+# Colab / notebooks
+*.ipynb_checkpoints
+.DS_Store
+__pycache__/
