@@ -83,8 +83,11 @@ def preprocess(
 
 
 if __name__ == "__main__":
-    preprocess(
-        raster_path="/content/shadecraft/data/raw/tempe_2013_naip.tif",
-        footprints_path="/content/shadecraft/data/osm/tempe_buildings.geojson",
-        save_dir="/content/shadecraft/data/processed/2013"
-    )
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Rasterize OSM footprints and extract shade cues.")
+    parser.add_argument("--raster-path", default="data/raw/tempe_2013_naip.tif")
+    parser.add_argument("--footprints-path", default="data/osm/tempe_buildings.geojson")
+    parser.add_argument("--save-dir", default="data/processed/2013")
+    args = parser.parse_args()
+    preprocess(args.raster_path, args.footprints_path, args.save_dir)

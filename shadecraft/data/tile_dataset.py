@@ -82,14 +82,21 @@ def tile_dataset(
 
         saved_count += 1
 
-    print(f"✔ Saved {saved_count} patches for year {year}.")
+    print(f"Saved {saved_count} patches for year {year}.")
 
 
 if __name__ == "__main__":
-    # Example use (2013 dataset)
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Tile preprocessed rasters into 256×256 patches.")
+    parser.add_argument("--processed-dir", default="data/processed/2013")
+    parser.add_argument("--patch-size", type=int, default=256)
+    parser.add_argument("--min-building-pixels", type=int, default=50)
+    parser.add_argument("--year", default="2013")
+    args = parser.parse_args()
     tile_dataset(
-        processed_dir="/content/shadecraft/data/processed/2013",
-        patch_size=256,
-        min_building_pixels=50,
-        year="2013"
+        processed_dir=args.processed_dir,
+        patch_size=args.patch_size,
+        min_building_pixels=args.min_building_pixels,
+        year=args.year,
     )

@@ -1,21 +1,8 @@
-"""
-shadecraft/models/unet.py
-
-Baseline U-Net for ShadeCraft.
-
-- Default input channels: 5 (RGB + OSM building mask + Canny edges)
-- Output channels: 1 (shade probability / mask)
-
-Optional time conditioning:
-If you pass a time vector to forward(..., t=...), it will FiLM-condition the
-bottleneck latent. For baseline training, just call forward(x) and ignore t.
-
-This model is lightweight and Colab-friendly.
-"""
+"""U-Net shade predictor with optional GARB bottleneck refinement and time FiLM."""
 
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Optional, Tuple, List
+from typing import Optional
 
 import torch
 import torch.nn as nn
@@ -138,18 +125,23 @@ class UNetConfig:
     bilinear: bool = True
     gn_groups: int = 8
 
-    # Optional time conditioning
     use_time: bool = False
     time_dim: int = 4  # e.g., [time_of_day, azimuth, altitude, day_of_year]
+
+    use_garb: bool = False
+    garb_edge_weight: float = 1.0
 
 
 class UNet(nn.Module):
     """
-    Baseline U-Net for shade prediction.
+    U-Net for shade prediction.
 
     Forward:
-      y = model(x)                 # baseline
+      y = model(x)
       y = model(x, t=time_vector)  # if use_time=True
+
+    When use_garb=True, the last input channel is treated as an edge map
+    and fed to BasicGARB at the bottleneck.
     """
     def __init__(self, cfg: UNetConfig = UNetConfig()):
         super().__init__()
@@ -176,6 +168,16 @@ class UNet(nn.Module):
         self.outc = OutConv(c, cfg.out_channels)
 
         self._init_weights()
+
+        # Attach after backbone init so GARB keeps its own residual-friendly weights.
+        if cfg.use_garb:
+            from .garb import BasicGARB
+            self.garb = BasicGARB(
+                latent_channels=c * 16 // factor,
+                edge_weight=cfg.garb_edge_weight,
+            )
+        else:
+            self.garb = None
 
     def _init_weights(self):
         for m in self.modules():
@@ -204,6 +206,10 @@ class UNet(nn.Module):
             if t is None:
                 raise ValueError("UNetConfig.use_time=True, but no time vector t was provided.")
             x5 = self.film(x5, t)
+
+        if self.garb is not None:
+            # Edge map is the last input channel (see ShadeCraftPatchDataset).
+            x5 = self.garb(x5, x[:, -1:, :, :])
 
         x = self.up1(x5, x4)
         x = self.up2(x,  x3)

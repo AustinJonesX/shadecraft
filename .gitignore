@@ -1,7 +1,21 @@
-# Data / outputs
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+.env
+.python-version
+
+# Data / model artifacts
 data/
 !shadecraft/data/
 checkpoints/
+logs/
+runs/
 *.pt
 *.pth
 *.ckpt
@@ -13,7 +27,6 @@ checkpoints/
 *.npy
 *.npz
 
-# Colab / notebooks
-*.ipynb_checkpoints
+# Notebooks / OS
+.ipynb_checkpoints/
 .DS_Store
-__pycache__/

@@ -1,27 +1,11 @@
-"""
-shadecraft/models/garb.py
+"""Gradient-Aware Refinement Block (GARB).
 
-Basic Gradient-Aware Refinement Block (GARB) for ShadeCraft.
-
-Goal:
-- Improve shadow boundary sharpness by injecting gradient structure into
-  the UNet bottleneck.
-
-Inputs:
-- latent: UNet bottleneck features (B, C, H, W)
-- edges:  Canny/edge map from building mask or image (B, 1, H_in, W_in)
-
-Process:
-1) Compute Sobel gradients of edges (structure cues)
-2) Compute Sobel gradients of latent (where current boundaries are soft)
-3) Fuse gradients + latent through lightweight convs
-4) Output refined latent for UNet decoder
-
-This is intentionally minimal and Colab-friendly.
+Fuses Sobel gradients of the input edge map with bottleneck features so
+shade boundaries stay sharp. Used as a lightweight plug-in at the U-Net
+bottleneck; the paper evaluates a multi-scale variant on ControlNet.
 """
 
 from __future__ import annotations
-from typing import Optional
 
 import torch
 import torch.nn as nn
@@ -54,12 +38,7 @@ class SobelGrad(nn.Module):
 
 
 class BasicGARB(nn.Module):
-    """
-    Basic Gradient-Aware Refinement Block (B1).
-
-    latent_channels: number of channels in bottleneck latent (C)
-    edge_weight: how strongly edges influence refinement
-    """
+    """Gradient-aware refinement applied at a single feature scale."""
     def __init__(self, latent_channels: int, edge_weight: float = 1.0):
         super().__init__()
         self.edge_weight = edge_weight

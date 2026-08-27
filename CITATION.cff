@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it as below.
+title: "ShadeCraft: Learning Time-Dynamic Urban Shadow Patterns with Deep Generative Models"
+authors:
+  - family-names: Chaudhari
+    given-names: Vraj Ashokbhai
+    email: vchaud22@asu.edu
+    affiliation: Arizona State University
+  - family-names: Jones
+    given-names: Austin
+    email: atjone16@asu.edu
+    affiliation: Arizona State University
+  - family-names: Shirode
+    given-names: Atharva
+    email: ashirod4@asu.edu
+    affiliation: Arizona State University
+  - family-names: Uttare
+    given-names: Tejas Rajaram
+    email: tuttare@asu.edu
+    affiliation: Arizona State University
+version: 0.1.0
+date-released: "2025"
+license: MIT
+url: "https://github.com/AustinJonesX/shadecraft"
+preferred-citation:
+  type: article
+  title: "ShadeCraft: Learning Time-Dynamic Urban Shadow Patterns with Deep Generative Models"
+  authors:
+    - family-names: Chaudhari
+      given-names: Vraj Ashokbhai
+    - family-names: Jones
+      given-names: Austin
+    - family-names: Shirode
+      given-names: Atharva
+    - family-names: Uttare
+      given-names: Tejas Rajaram
+  year: 2025
+  notes: Arizona State University
